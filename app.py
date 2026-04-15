@@ -23,7 +23,7 @@ st.set_page_config(
 # ----------------------------
 @st.cache_resource
 def load_models():
-    cnn_model = load_model("cnn_model.keras")
+    cnn_model = load_model("cnn_model.keras",compile=False))
 
     feature_extractor = Model(
         inputs=cnn_model.input,
