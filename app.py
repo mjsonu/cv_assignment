@@ -15,17 +15,11 @@ from model_utils import predict
 from gradcam_utils import make_gradcam_heatmap, overlay_heatmap
 
 
-# ----------------------------
-# Page Config
-# ----------------------------
 st.set_page_config(
     page_title="Brain Tumor Detection",
     layout="wide"
 )
 
-# ----------------------------
-# Load Models
-# ----------------------------
 @st.cache_resource
 def load_models():
     cnn_model = load_model("cnn_model.keras",compile=False)
@@ -49,15 +43,9 @@ def load_models():
 
 cnn_model, feature_extractor, pca, voting_clf, class_names = load_models()
 
-# ----------------------------
-# Header
-# ----------------------------
 st.title("🧠 Brain Tumor Detection AI")
 st.caption("Upload an MRI scan to predict tumor presence")
 
-# ----------------------------
-# Upload
-# ----------------------------
 uploaded_file = st.file_uploader(
     "Upload MRI Image",
     type=["jpg", "jpeg", "png"]
@@ -66,9 +54,6 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     image = Image.open(uploaded_file)
 
-    # ----------------------------
-    # Prediction
-    # ----------------------------
     with st.spinner("Analyzing MRI..."):
         pred_class, confidence, probs, img_input = predict(
             image, feature_extractor, pca, voting_clf, class_names
@@ -76,17 +61,12 @@ if uploaded_file:
 
     label = class_names[pred_class]
 
-    # ----------------------------
-    # Layout: Image | Results
-    # ----------------------------
     col1, col2 = st.columns(2)
 
-    # LEFT: Image
     with col1:
         st.subheader("Uploaded MRI")
         st.image(image, use_container_width=True)
 
-    # RIGHT: Prediction + Graph
     with col2:
         st.subheader("Prediction")
 
@@ -98,9 +78,6 @@ if uploaded_file:
         st.metric("Confidence", f"{confidence * 100:.2f}%")
 
     
-        # ----------------------------
-        # Animated Vertical Graph
-        # ----------------------------
         st.subheader("Class Probabilities")
 
         # Highlight predicted class
@@ -109,9 +86,6 @@ if uploaded_file:
         colors[pred_class] = highlight_color
 
         chart_placeholder = st.empty()
-
-        # Reset animation on new upload (make sure you already added this)
-        # st.session_state.pop("animated", None)
 
         if "animated" not in st.session_state:
             st.session_state.animated = True
@@ -164,9 +138,6 @@ if uploaded_file:
 
             chart_placeholder.plotly_chart(fig, use_container_width=True)
 
-    # ----------------------------
-    # Grad-CAM Section (Full Width)
-    # ----------------------------
     st.divider()
 
     if label != "notumor" and confidence > 0.6:

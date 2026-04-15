@@ -28,24 +28,14 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name="last_conv_layer
 
 
 def overlay_heatmap(img, heatmap):
-
-    # Ensure image is uint8
     if img.dtype != np.uint8:
         img = (img * 255).astype("uint8")
 
-    # Resize heatmap to match image
     heatmap = cv2.resize(heatmap, (img.shape[1], img.shape[0]))
-
-    # Convert heatmap to 0-255
     heatmap = np.uint8(255 * heatmap)
-
-    # Apply color map → becomes 3-channel
     heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
 
-    # Ensure both are same size
     img = cv2.resize(img, (heatmap.shape[1], heatmap.shape[0]))
-
-    # Overlay
     superimposed = cv2.addWeighted(img, 0.6, heatmap, 0.4, 0)
 
     return superimposed

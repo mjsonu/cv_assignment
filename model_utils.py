@@ -4,7 +4,7 @@ import cv2
 def preprocess_image(image):
     img = np.array(image)
 
-    # Fix channels
+    # Fix channel
     if len(img.shape) == 2:
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     elif img.shape[2] == 4:
