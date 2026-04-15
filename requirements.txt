@@ -1,0 +1,67 @@
+import plotly.graph_objects as go
+import time
+
+# ----------------------------
+# Animated Vertical Graph
+# ----------------------------
+st.subheader("Class Probabilities")
+
+# Highlight predicted class
+colors = ["#636EFA"] * len(class_names)
+colors[pred_class] = "#EF553B"
+
+chart_placeholder = st.empty()
+
+# Reset animation on new upload (make sure you already added this)
+# st.session_state.pop("animated", None)
+
+if "animated" not in st.session_state:
+    st.session_state.animated = True
+
+    steps = 25
+
+    for step in range(steps + 1):
+        progress = step / steps
+        animated_probs = probs * progress
+
+        fig = go.Figure()
+
+        fig.add_trace(go.Bar(
+            x=class_names,
+            y=animated_probs,
+            marker_color=colors,
+            text=[f"{p*100:.1f}%" for p in animated_probs],
+            textposition='outside'
+        ))
+
+        fig.update_layout(
+            template="plotly_dark",
+            yaxis=dict(range=[0, 1], title="Probability"),
+            xaxis=dict(title="Classes"),
+            height=400,
+            margin=dict(l=20, r=20, t=30, b=20)
+        )
+
+        chart_placeholder.plotly_chart(fig, use_container_width=True)
+        time.sleep(0.02)
+
+else:
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=class_names,
+        y=probs,
+        marker_color=colors,
+        text=[f"{p*100:.1f}%" for p in probs],
+        textposition='outside'
+    ))
+
+    fig.update_layout(
+        template="plotly_dark",
+        yaxis=dict(range=[0, 1], title="Probability"),
+        xaxis=dict(title="Classes"),
+        height=400,
+        margin=dict(l=20, r=20, t=30, b=20)
+    )
+
+    chart_placeholder.plotly_chart(fig, use_container_width=True)
