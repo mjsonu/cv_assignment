@@ -1,14 +1,18 @@
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
 import streamlit as st
 import pickle
 import numpy as np
-from tensorflow.keras.models import load_model, Model
-import plotly.graph_objects as go
-import time
 import matplotlib.pyplot as plt
 from PIL import Image
 import cv2
+
+from tensorflow.keras.models import load_model, Model
+
 from model_utils import predict
 from gradcam_utils import make_gradcam_heatmap, overlay_heatmap
+
 
 # ----------------------------
 # Page Config
